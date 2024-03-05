@@ -1,0 +1,45 @@
+package com.example.demo.services;
+
+import com.example.demo.models.Product;
+import com.example.demo.repositories.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProductService {
+    @Autowired
+    private ProductRepository productRepository;
+
+    // Método para obtener todos los productos
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    // Método para obtener un producto por su ID
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    // Método para crear un nuevo producto
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    // Método para actualizar un producto existente
+    public Product updateProduct(Long id, Product productDetails) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null) {
+            product.setName(productDetails.getName());
+            product.setPrice(productDetails.getPrice());
+            return productRepository.save(product);
+        }
+        return null;
+    }
+
+    // Método para eliminar un producto
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+}

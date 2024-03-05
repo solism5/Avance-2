@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles del Paciente</title>
+</head>
+<body>
+    <h1>Detalles del Paciente</h1>
+    <p><strong>Número de Cédula:</strong> <span th:text="${patient.patientId}"></span></p>
+    <p><strong>Nombre:</strong> <span th:text="${patient.name}"></span></p>
+    <p><strong>Correo Electrónico:</strong> <span th:text="${patient.email}"></span></p>
+    <p><strong>Teléfono:</strong> <span th:text="${patient.phoneNumber}"></span></p>
+    <!-- Otros detalles del paciente, como historial de citas, podrían agregarse aquí -->
+</body>
+</html>

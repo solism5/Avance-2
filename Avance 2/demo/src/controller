@@ -1,0 +1,66 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@Controller
+@RequestMapping("/patients")
+public class PatientController {
+
+    @Autowired
+    private PatientService patientService; // Suponiendo que tienes un servicio para manejar la lógica relacionada con los pacientes
+
+    // Maneja las solicitudes GET para mostrar la lista de pacientes
+    @GetMapping("")
+    public String showPatients(Model model) {
+        List<Patient> patients = patientService.getAllPatients(); // Obtén la lista de todos los pacientes
+        model.addAttribute("patients", patients); // Agrega la lista de pacientes al modelo para mostrar en la vista
+        return "patient-list"; // Nombre de la plantilla Thymeleaf (patient-list.html) que mostrará la lista de pacientes
+    }
+
+    // Maneja las solicitudes GET para mostrar el formulario de creación de pacientes
+    @GetMapping("/new")
+    public String showPatientForm(Model model) {
+        model.addAttribute("patient", new Patient()); // Agrega un nuevo objeto Patient al modelo para el formulario
+        return "patient-form"; // Nombre de la plantilla Thymeleaf (patient-form.html) que mostrará el formulario de creación de pacientes
+    }
+
+    // Maneja las solicitudes POST para crear un nuevo paciente
+    @PostMapping("/new")
+    public String createPatient(@ModelAttribute("patient") Patient patient) {
+        patientService.savePatient(patient); // Guarda el nuevo paciente en la base de datos
+        return "redirect:/patients"; // Redirecciona a la lista de pacientes después de crear uno nuevo
+    }
+
+    // Maneja las solicitudes GET para mostrar los detalles de un paciente específico
+    @GetMapping("/{id}")
+    public String showPatientDetails(@PathVariable Long id, Model model) {
+        Patient patient = patientService.getPatientById(id); // Obtiene los detalles de un paciente por su ID
+        model.addAttribute("patient", patient); // Agrega el paciente al modelo para mostrar en la vista
+        return "patient-details"; // Nombre de la plantilla Thymeleaf (patient-details.html) que mostrará los detalles del paciente
+    }
+
+    // Maneja las solicitudes GET para mostrar el formulario de actualización de pacientes
+    @GetMapping("/{id}/edit")
+    public String showEditPatientForm(@PathVariable Long id, Model model) {
+        Patient patient = patientService.getPatientById(id); // Obtiene los detalles de un paciente por su ID
+        model.addAttribute("patient", patient); // Agrega el paciente al modelo para el formulario de edición
+        return "patient-form"; // Nombre de la plantilla Thymeleaf (patient-form.html) que mostrará el formulario de actualización de pacientes
+    }
+
+    // Maneja las solicitudes POST para actualizar un paciente existente
+    @PostMapping("/{id}/edit")
+    public String updatePatient(@PathVariable Long id, @ModelAttribute("patient") Patient patient) {
+        patient.setId(id); // Establece el ID del paciente según el ID proporcionado en la URL
+        patientService.savePatient(patient); // Actualiza los detalles del paciente en la base de datos
+        return "redirect:/patients"; // Redirecciona a la lista de pacientes después de actualizar los detalles
+    }
+
+    // Maneja las solicitudes POST para eliminar un paciente
+    @PostMapping("/{id}/delete")
+    public String deletePatient(@PathVariable Long id) {
+        patientService.deletePatientById(id); // Elimina el paciente de la base de datos por su ID
+        return "redirect:/patients"; // Redirecciona a la lista de pacientes después de eliminar uno
+    }
+}
